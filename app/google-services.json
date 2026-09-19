@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464910354615",
+    "project_id": "maites-calc",
+    "storage_bucket": "maites-calc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464910354615:android:ec8b5bfc4ecafaf6a2a532",
+        "android_client_info": {
+          "package_name": "com.example.maitescalc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVVrNVfi8Xx09O2X4ae5w0deSevWfmP7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
