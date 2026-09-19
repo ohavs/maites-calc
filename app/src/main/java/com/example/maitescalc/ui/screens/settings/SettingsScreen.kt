@@ -4,17 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.maitescalc.ui.components.ConfirmDialog
 import com.example.maitescalc.ui.components.MaitesCard
+import com.example.maitescalc.ui.components.MaitesPrimaryButton
 import com.example.maitescalc.ui.components.MaitesSecondaryButton
 import com.example.maitescalc.ui.components.MaitesTopBar
 import com.example.maitescalc.ui.theme.AppColorPalette
@@ -56,6 +57,157 @@ fun SettingsScreen(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            // App Updates Section (Automatic in-app updater)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.SystemUpdate,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "עדכון גרסה אוטומטי",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            MaitesCard(modifier = Modifier.fillMaxWidth()) {
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "גרסה מותקנת",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "v${uiState.currentVersion}",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        if (uiState.isCheckingUpdate) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(28.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                                strokeWidth = 3.dp
+                            )
+                        } else {
+                            Button(
+                                onClick = { viewModel.checkForUpdates() },
+                                shape = MaterialTheme.shapes.small,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                ),
+                                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Refresh,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(text = "בדוק עדכון", style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
+                    }
+
+                    // Status Message
+                    uiState.updateStatusMessage?.let { msg ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.small)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = msg,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+
+                    // Update Available Details or Direct Download
+                    uiState.updateInfo?.let { info ->
+                        if (info.downloadUrl.isNotBlank()) {
+                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "גרסה בענן: ${info.latestVersion}",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    if (info.fileSize > 0) {
+                                        Text(
+                                            text = "${String.format("%.1f", info.fileSize.toDouble() / (1024 * 1024))} MB",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+
+                                if (info.changelog.isNotBlank()) {
+                                    Text(
+                                        text = info.changelog,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+
+                                // Download Progress
+                                if (uiState.isDownloadingUpdate) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    LinearProgressIndicator(
+                                        progress = { uiState.downloadPercent / 100f },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(8.dp)
+                                            .clip(MaterialTheme.shapes.extraSmall),
+                                        color = MaterialTheme.colorScheme.primary,
+                                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+                                    )
+                                    Text(
+                                        text = uiState.downloadProgressText,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                } else {
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    MaitesPrimaryButton(
+                                        text = if (info.isUpdateAvailable) "הורד והתקן עדכון עכשיו" else "הורד והתקן מחדש גרסה זו",
+                                        onClick = { viewModel.downloadAndInstallUpdate(info.downloadUrl) },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        icon = Icons.Filled.CloudDownload
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
             // Palette Selector Section
             Row(
                 verticalAlignment = Alignment.CenterVertically,
