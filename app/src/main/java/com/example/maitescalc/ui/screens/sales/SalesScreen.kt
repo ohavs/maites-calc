@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -54,8 +53,8 @@ fun SalesScreen(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(percent = 50),
-                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 2.dp),
                 icon = { Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(20.dp)) },
                 text = { Text("מכירה חדשה", fontWeight = FontWeight.Bold) }
             )
@@ -93,7 +92,7 @@ fun SalesScreen(
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        shape = RoundedCornerShape(percent = 50),
+                        shape = RoundedCornerShape(8.dp),
                         border = FilterChipDefaults.filterChipBorder(
                             enabled = true,
                             selected = selected,
@@ -217,9 +216,9 @@ private fun SaleCard(
                 // Status Badge
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(percent = 50))
+                        .clip(RoundedCornerShape(6.dp))
                         .background(statusColor.copy(alpha = 0.12f))
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                        .padding(horizontal = 10.dp, vertical = 3.dp)
                 ) {
                     Text(
                         text = sale.status.displayName,
@@ -291,7 +290,7 @@ private fun SaleCard(
                     onClick = onEdit,
                     modifier = Modifier
                         .size(34.dp)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Icon(
@@ -306,7 +305,7 @@ private fun SaleCard(
                     onClick = onDelete,
                     modifier = Modifier
                         .size(34.dp)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
                 ) {
                     Icon(

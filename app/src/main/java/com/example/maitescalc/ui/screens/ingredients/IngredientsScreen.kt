@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -52,7 +51,7 @@ fun IngredientsScreen(
                         onClick = onNavigateToSearch,
                         modifier = Modifier
                             .size(42.dp)
-                            .clip(CircleShape)
+                            .clip(RoundedCornerShape(10.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
                     ) {
                         Icon(
@@ -70,8 +69,8 @@ fun IngredientsScreen(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(percent = 50),
-                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 2.dp),
                 icon = { Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(20.dp)) },
                 text = { Text("מצרך חדש", fontWeight = FontWeight.Bold) }
             )
@@ -117,7 +116,7 @@ fun IngredientsScreen(
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        shape = RoundedCornerShape(percent = 50),
+                        shape = RoundedCornerShape(8.dp),
                         border = FilterChipDefaults.filterChipBorder(
                             enabled = true,
                             selected = selected,
@@ -229,9 +228,9 @@ private fun IngredientCard(
                         Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(percent = 50))
+                                .clip(RoundedCornerShape(6.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .padding(horizontal = 10.dp, vertical = 3.dp)
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Text(
                                 text = ingredient.category,
@@ -282,7 +281,7 @@ private fun IngredientCard(
                         onClick = onClick,
                         modifier = Modifier
                             .size(34.dp)
-                            .clip(CircleShape)
+                            .clip(RoundedCornerShape(8.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Icon(
@@ -296,7 +295,7 @@ private fun IngredientCard(
                         onClick = onDelete,
                         modifier = Modifier
                             .size(34.dp)
-                            .clip(CircleShape)
+                            .clip(RoundedCornerShape(8.dp))
                             .background(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
                     ) {
                         Icon(

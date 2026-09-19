@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
@@ -49,8 +48,8 @@ fun RecipesScreen(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(percent = 50),
-                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 2.dp),
                 icon = { Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(20.dp)) },
                 text = { Text("מתכון חדש", fontWeight = FontWeight.Bold) }
             )
@@ -96,7 +95,7 @@ fun RecipesScreen(
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        shape = RoundedCornerShape(percent = 50),
+                        shape = RoundedCornerShape(8.dp),
                         border = FilterChipDefaults.filterChipBorder(
                             enabled = true,
                             selected = selected,
@@ -201,7 +200,7 @@ private fun RecipeCard(
                         if (recipe.category.isNotEmpty()) {
                             Box(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(percent = 50))
+                                    .clip(RoundedCornerShape(6.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
@@ -224,9 +223,9 @@ private fun RecipeCard(
                 // Profit badge
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(percent = 50))
+                        .clip(RoundedCornerShape(6.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Text(
                         text = "+${String.format("%.0f", recipe.profitMargin)}% רווח",
@@ -297,7 +296,7 @@ private fun RecipeCard(
                     onClick = onEdit,
                     modifier = Modifier
                         .size(34.dp)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Icon(
@@ -312,7 +311,7 @@ private fun RecipeCard(
                     onClick = onDelete,
                     modifier = Modifier
                         .size(34.dp)
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
                 ) {
                     Icon(

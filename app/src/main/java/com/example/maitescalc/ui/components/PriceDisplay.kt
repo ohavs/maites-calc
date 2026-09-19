@@ -1,6 +1,5 @@
 package com.example.maitescalc.ui.components
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,9 +26,9 @@ fun PriceDisplay(
 ) {
     val bgModifier = if (showBackground) {
         Modifier
-            .clip(RoundedCornerShape(percent = 50))
-            .background(color = MaterialTheme.colorScheme.primaryContainer)
-            .padding(horizontal = 14.dp, vertical = 6.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 10.dp, vertical = 4.dp)
     } else {
         Modifier
     }
@@ -40,38 +39,22 @@ fun PriceDisplay(
     ) {
         Text(
             text = "₪",
-            style = if (large) MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
-            else MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp),
-            color = if (showBackground) MaterialTheme.colorScheme.onPrimaryContainer
-            else MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Black
+            style = if (large) MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
+            else MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+            color = if (showBackground) MaterialTheme.colorScheme.onSurfaceVariant
+            else MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(3.dp))
 
-        AnimatedContent(
-            targetState = CostCalculator.formatPriceShort(price),
-            transitionSpec = {
-                if (targetState > initialState) {
-                    (slideInVertically { height -> height } + fadeIn()).togetherWith(
-                        slideOutVertically { height -> -height } + fadeOut()
-                    )
-                } else {
-                    (slideInVertically { height -> -height } + fadeIn()).togetherWith(
-                        slideOutVertically { height -> height } + fadeOut()
-                    )
-                }
-            },
-            label = "priceAnimation"
-        ) { animatedPrice ->
-            Text(
-                text = animatedPrice,
-                style = if (large) MaterialTheme.typography.displayMedium.copy(fontSize = 32.sp)
-                else MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-                color = if (showBackground) MaterialTheme.colorScheme.onPrimaryContainer
-                else MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.ExtraBold
-            )
-        }
+        Text(
+            text = CostCalculator.formatPriceShort(price),
+            style = if (large) MaterialTheme.typography.displaySmall.copy(fontSize = 28.sp)
+            else MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+            color = if (showBackground) MaterialTheme.colorScheme.onSurface
+            else MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.ExtraBold
+        )
     }
 }

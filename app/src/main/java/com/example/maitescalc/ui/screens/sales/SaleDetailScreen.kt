@@ -112,9 +112,10 @@ fun SaleDetailScreen(
                                 FilterChip(
                                     selected = true,
                                     onClick = { statusExpanded = true },
-                                    label = { Text(sale.status.displayName) },
+                                    label = { Text(sale.status.displayName, fontWeight = FontWeight.SemiBold) },
+                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
                                     colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = statusColor.copy(alpha = 0.2f),
+                                        selectedContainerColor = statusColor.copy(alpha = 0.15f),
                                         selectedLabelColor = statusColor
                                     )
                                 )

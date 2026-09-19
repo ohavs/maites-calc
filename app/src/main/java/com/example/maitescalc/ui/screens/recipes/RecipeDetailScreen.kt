@@ -1,6 +1,7 @@
 package com.example.maitescalc.ui.screens.recipes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -252,9 +253,15 @@ private fun MetricBox(
     Box(
         modifier = modifier
             .clip(MaterialTheme.shapes.medium)
-            .background(
-                if (highlight) MaterialTheme.colorScheme.primaryContainer
-                else MaterialTheme.colorScheme.surface
+            .then(
+                if (highlight) Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+                else Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                        MaterialTheme.shapes.medium
+                    )
             )
             .padding(16.dp)
     ) {

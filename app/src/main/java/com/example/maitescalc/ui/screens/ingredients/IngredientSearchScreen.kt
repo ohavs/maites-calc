@@ -102,6 +102,7 @@ fun IngredientSearchScreen(
                             performSearch(keyword)
                         },
                         label = { Text(keyword) },
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
