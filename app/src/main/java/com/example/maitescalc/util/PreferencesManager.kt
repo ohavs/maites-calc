@@ -14,10 +14,11 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 class PreferencesManager(private val context: Context) {
     companion object {
         val SELECTED_PALETTE_KEY = stringPreferencesKey("selected_palette")
+        const val DEFAULT_PALETTE = "monochrome"
     }
 
     val selectedPaletteFlow: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[SELECTED_PALETTE_KEY] ?: "lime"
+        preferences[SELECTED_PALETTE_KEY] ?: DEFAULT_PALETTE
     }
 
     suspend fun setSelectedPalette(paletteId: String) {

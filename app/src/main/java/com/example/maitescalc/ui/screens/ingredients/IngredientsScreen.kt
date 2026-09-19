@@ -1,15 +1,20 @@
 package com.example.maitescalc.ui.screens.ingredients
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CloudDownload
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material3.*
@@ -19,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.maitescalc.data.model.Ingredient
 import com.example.maitescalc.ui.components.*
@@ -35,33 +41,40 @@ fun IngredientsScreen(
     val uiState by viewModel.uiState.collectAsState()
     var ingredientToDelete by remember { mutableStateOf<Ingredient?>(null) }
 
-    // Categories list for filtering
     val categories = remember { listOf("הכל") + Ingredient.categories }
 
     Scaffold(
         topBar = {
             MaitesTopBar(
-                title = "מצרכים",
+                title = "מצרכים וחומרי גלם",
                 actions = {
-                    IconButton(onClick = onNavigateToSearch) {
+                    IconButton(
+                        onClick = onNavigateToSearch,
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.CloudDownload,
                             contentDescription = "חיפוש ב-API",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "הוסף מצרך חדש")
-            }
+                shape = RoundedCornerShape(percent = 50),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
+                icon = { Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                text = { Text("מצרך חדש", fontWeight = FontWeight.Bold) }
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -74,16 +87,16 @@ fun IngredientsScreen(
             MaitesSearchBar(
                 query = uiState.searchQuery,
                 onQueryChange = viewModel::setSearchQuery,
-                placeholder = "חיפוש מצרך לפי שם, מותג או ברקוד...",
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                placeholder = "חפש מצרך לפי שם, מותג...",
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
 
-            // Category Filter Chips
+            // Category Filter Pills
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                    .padding(horizontal = 20.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 categories.forEach { category ->
@@ -91,17 +104,31 @@ fun IngredientsScreen(
                     FilterChip(
                         selected = selected,
                         onClick = { viewModel.setSelectedCategory(category) },
-                        label = { Text(category) },
+                        label = {
+                            Text(
+                                text = category,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        shape = MaterialTheme.shapes.small
+                        shape = RoundedCornerShape(percent = 50),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = selected,
+                            borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                            selectedBorderColor = MaterialTheme.colorScheme.primary
+                        )
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Content List or Empty State
             if (uiState.isLoading) {
@@ -109,11 +136,11 @@ fun IngredientsScreen(
             } else if (uiState.filteredIngredients.isEmpty()) {
                 EmptyState(
                     icon = Icons.Filled.Inventory2,
-                    title = if (uiState.searchQuery.isNotEmpty()) "לא נמצאו תוצאות" else "אין מצרכים במערכת",
+                    title = if (uiState.searchQuery.isNotEmpty()) "לא נמצאו תוצאות" else "אין מצרכים במלאי",
                     subtitle = if (uiState.searchQuery.isNotEmpty())
                         "נסה לשנות את מילות החיפוש"
                     else
-                        "התחל להוסיף מצרכים כדי לחשב עלויות של מתכונים",
+                        "הוסף את חומרי הגלם שלך כדי לחשב עלויות מדויקות למתכונים",
                     action = {
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             MaitesPrimaryButton(
@@ -132,8 +159,8 @@ fun IngredientsScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 96.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(
                         items = uiState.filteredIngredients,
@@ -154,7 +181,7 @@ fun IngredientsScreen(
     ingredientToDelete?.let { ingredient ->
         ConfirmDialog(
             title = "מחיקת מצרך",
-            message = "האם אתה בטוח שברצונך למחוק את '${ingredient.name}'? שים לב: מתכונים שמבוססים על מצרך זה יושפעו.",
+            message = "האם אתה בטוח שברצונך למחוק את '${ingredient.name}'? מתכונים המשתמשים במצרך זה יושפעו.",
             confirmText = "מחק",
             dismissText = "ביטול",
             isDestructive = true,
@@ -175,7 +202,8 @@ private fun IngredientCard(
 ) {
     MaitesCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = 18.dp
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(
@@ -201,26 +229,28 @@ private fun IngredientCard(
                         Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
-                                .clip(MaterialTheme.shapes.extraSmall)
+                                .clip(RoundedCornerShape(percent = 50))
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                                .padding(horizontal = 10.dp, vertical = 3.dp)
                         ) {
                             Text(
                                 text = ingredient.category,
                                 style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
                 }
 
-                // Price display per base unit
+                // Clean price display badge
                 Column(horizontalAlignment = Alignment.End) {
                     PriceDisplay(
                         price = ingredient.calculatedPricePerUnit,
                         large = false,
                         showBackground = true
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = "ל-${ingredient.unitType.displayName}",
                         style = MaterialTheme.typography.labelSmall,
@@ -229,7 +259,9 @@ private fun IngredientCard(
                 }
             }
 
-            // Package info and actions
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
+
+            // Package info and quick actions
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -237,7 +269,7 @@ private fun IngredientCard(
             ) {
                 if (ingredient.packageSize > 0 && ingredient.packagePrice > 0) {
                     Text(
-                        text = "אריזה: ${ingredient.packageSize} ${ingredient.unitType.shortName} במחיר ₪${String.format("%.2f", ingredient.packagePrice)}",
+                        text = "אריזה: ${ingredient.packageSize} ${ingredient.unitType.shortName} • ₪${String.format("%.2f", ingredient.packagePrice)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -245,27 +277,33 @@ private fun IngredientCard(
                     Spacer(modifier = Modifier.width(1.dp))
                 }
 
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     IconButton(
                         onClick = onClick,
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
                             contentDescription = "ערוך",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(18.dp)
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                     IconButton(
                         onClick = onDelete,
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Delete,
+                            imageVector = Icons.Filled.DeleteOutline,
                             contentDescription = "מחק",
                             tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }

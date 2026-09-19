@@ -1,15 +1,22 @@
 package com.example.maitescalc.ui.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.ArrowOutward
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.TrendingUp
@@ -24,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.maitescalc.ui.components.MaitesCard
-import com.example.maitescalc.ui.components.MaitesSecondaryButton
 import com.example.maitescalc.ui.components.MaitesTopBar
 import com.example.maitescalc.ui.components.PriceDisplay
 
@@ -41,13 +47,20 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             MaitesTopBar(
-                title = "מחשבון עלויות",
+                title = "Maite's Calc",
                 actions = {
-                    IconButton(onClick = onNavigateToSettings) {
+                    IconButton(
+                        onClick = onNavigateToSettings,
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "הגדרות",
-                            tint = MaterialTheme.colorScheme.onBackground
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -60,122 +73,164 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Welcome Section
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "שלום, ${uiState.displayName} 👋",
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(
-                        text = "סקירת פעילות עסק האפייה שלך",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+            // Header / Greeting
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "שלום, ${uiState.displayName}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "תמונת מצב עסקית",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Large Hero Cards (Style reference: Large, bold cards with rounded corners)
-            HeroDashboardCard(
-                title = "מצרכים במלאי",
-                subtitle = "ניהול חומרי גלם ועלות לק\"ג / יחידה",
-                countText = "${uiState.ingredientsCount}",
-                icon = Icons.Filled.Inventory2,
-                onClick = onNavigateToIngredients
-            )
-
-            HeroDashboardCard(
-                title = "מתכונים ומנות",
-                subtitle = "הרכבת מתכונים וחישוב עלות אוטומטי",
-                countText = "${uiState.recipesCount}",
-                icon = Icons.Filled.MenuBook,
-                onClick = onNavigateToRecipes
-            )
-
-            HeroDashboardCard(
-                title = "מכירות והזמנות",
-                subtitle = "הזמנות פתוחות וחישוב רווחיות",
-                countText = "${uiState.openSalesCount}",
-                icon = Icons.Filled.ShoppingCart,
-                onClick = onNavigateToSales
-            )
-
-            // Profit & Revenue Summary Card
+            // Big Modern Financial Hero Card (Inspired by reference fintech ticker)
             MaitesCard(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = 24.dp
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.TrendingUp,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Text(
-                                text = "סה\"כ רווח צפוי מהזמנות",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        PriceDisplay(
-                            price = uiState.totalProfit,
-                            large = true,
-                            showBackground = true
-                        )
-                    }
-
-                    Column(horizontalAlignment = Alignment.End) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = "הכנסות כוללות",
-                            style = MaterialTheme.typography.labelMedium,
+                            text = "סה\"כ רווח צפוי",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        PriceDisplay(
-                            price = uiState.totalRevenue,
-                            large = false
-                        )
+
+                        // Profit pill badge
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(percent = 50))
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.TrendingUp,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Text(
+                                    text = "רווחיות פעילה",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                        }
+                    }
+
+                    // Large ticker display
+                    PriceDisplay(
+                        price = uiState.totalProfit,
+                        large = true
+                    )
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "מחזור מכירות כולל",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            PriceDisplay(
+                                price = uiState.totalRevenue,
+                                large = false
+                            )
+                        }
+
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                text = "הזמנות פתוחות",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "${uiState.openSalesCount} הזמנות",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // Quick Category Overview Cards
+            Text(
+                text = "ניהול שוטף",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                ModernCategoryRow(
+                    title = "מצרכים וחומרי גלם",
+                    count = "${uiState.ingredientsCount} מצרכים",
+                    description = "מעקב מחירים, גדלי אריזה ועלות ליחידה",
+                    icon = Icons.Filled.Inventory2,
+                    onClick = onNavigateToIngredients
+                )
+
+                ModernCategoryRow(
+                    title = "מתכונים ומנות",
+                    count = "${uiState.recipesCount} מתכונים",
+                    description = "הרכבת מנות עם חישוב עלות עצמית מדויקת",
+                    icon = Icons.AutoMirrored.Filled.MenuBook,
+                    onClick = onNavigateToRecipes
+                )
+
+                ModernCategoryRow(
+                    title = "מכירות והזמנות",
+                    count = "${uiState.openSalesCount} פתוחות",
+                    description = "תמחור הזמנות בכמויות וחישוב רווח נקי",
+                    icon = Icons.Filled.ShoppingCart,
+                    onClick = onNavigateToSales
+                )
+            }
+
+            Spacer(modifier = Modifier.height(36.dp))
         }
     }
 }
 
 @Composable
-private fun HeroDashboardCard(
+private fun ModernCategoryRow(
     title: String,
-    subtitle: String,
-    countText: String,
+    count: String,
+    description: String,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
     MaitesCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = 18.dp
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -189,40 +244,60 @@ private fun HeroDashboardCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(56.dp)
-                        .clip(MaterialTheme.shapes.medium)
+                        .size(52.dp)
+                        .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(28.dp)
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(26.dp)
                     )
                 }
 
                 Column {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = subtitle,
+                        text = description,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
-            Text(
-                text = countText,
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(percent = 50))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = count,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.Filled.ArrowOutward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
     }
 }

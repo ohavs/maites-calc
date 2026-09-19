@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -48,14 +50,15 @@ fun SalesScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "צור מכירה חדשה")
-            }
+                shape = RoundedCornerShape(percent = 50),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
+                icon = { Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                text = { Text("מכירה חדשה", fontWeight = FontWeight.Bold) }
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -69,7 +72,7 @@ fun SalesScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 20.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 statusOptions.forEach { status ->
@@ -77,14 +80,26 @@ fun SalesScreen(
                     FilterChip(
                         selected = selected,
                         onClick = { viewModel.setSelectedStatus(status) },
-                        label = { Text(status) },
+                        label = {
+                            Text(
+                                text = status,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        shape = MaterialTheme.shapes.small
+                        shape = RoundedCornerShape(percent = 50),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = selected,
+                            borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                            selectedBorderColor = MaterialTheme.colorScheme.primary
+                        )
                     )
                 }
             }
@@ -108,7 +123,7 @@ fun SalesScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 96.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     items(
@@ -153,15 +168,16 @@ private fun SaleCard(
 ) {
     val statusColor = when (sale.status) {
         SaleStatus.DRAFT -> MaterialTheme.colorScheme.outline
-        SaleStatus.CONFIRMED -> Color(0xFF42A5F5)
-        SaleStatus.IN_PROGRESS -> Color(0xFFFFB74D)
-        SaleStatus.COMPLETED -> MaterialTheme.colorScheme.primary
-        SaleStatus.CANCELLED -> MaterialTheme.colorScheme.error
+        SaleStatus.CONFIRMED -> Color(0xFF2563EB)
+        SaleStatus.IN_PROGRESS -> Color(0xFFD97706)
+        SaleStatus.COMPLETED -> Color(0xFF16A34A)
+        SaleStatus.CANCELLED -> Color(0xFFDC2626)
     }
 
     MaitesCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = 20.dp
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             // Header Row: Name & Status Badge
@@ -178,6 +194,7 @@ private fun SaleCard(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     if (sale.customerName.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(2.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -200,9 +217,9 @@ private fun SaleCard(
                 // Status Badge
                 Box(
                     modifier = Modifier
-                        .clip(MaterialTheme.shapes.small)
-                        .background(statusColor.copy(alpha = 0.2f))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                        .clip(RoundedCornerShape(percent = 50))
+                        .background(statusColor.copy(alpha = 0.12f))
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = sale.status.displayName,
@@ -224,7 +241,7 @@ private fun SaleCard(
                 )
             }
 
-            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
 
             // Financial Summary Row
             Row(
@@ -238,6 +255,7 @@ private fun SaleCard(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     PriceDisplay(price = sale.totalPrice, large = false)
                 }
 
@@ -247,6 +265,7 @@ private fun SaleCard(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     PriceDisplay(price = sale.totalCost, large = false)
                 }
 
@@ -257,6 +276,7 @@ private fun SaleCard(
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     PriceDisplay(price = sale.profit, large = false, showBackground = true)
                 }
             }
@@ -264,22 +284,36 @@ private fun SaleCard(
             // Action Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onEdit, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onEdit,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
                         contentDescription = "ערוך מכירה",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp)
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(16.dp)
                     )
                 }
-                IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
+                Spacer(modifier = Modifier.width(6.dp))
+                IconButton(
+                    onClick = onDelete,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
+                ) {
                     Icon(
-                        imageVector = Icons.Filled.Delete,
+                        imageVector = Icons.Filled.DeleteOutline,
                         contentDescription = "מחק מכירה",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }

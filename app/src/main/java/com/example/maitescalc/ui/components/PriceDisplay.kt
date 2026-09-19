@@ -1,13 +1,18 @@
 package com.example.maitescalc.ui.components
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,33 +27,51 @@ fun PriceDisplay(
 ) {
     val bgModifier = if (showBackground) {
         Modifier
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.small
-            )
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .clip(RoundedCornerShape(percent = 50))
+            .background(color = MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 14.dp, vertical = 6.dp)
     } else {
         Modifier
     }
 
     Row(
         modifier = modifier.then(bgModifier),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "₪",
-            style = if (large) MaterialTheme.typography.titleMedium
-                    else MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = CostCalculator.formatPriceShort(price),
-            style = if (large) MaterialTheme.typography.headlineLarge.copy(fontSize = 32.sp)
-                    else MaterialTheme.typography.titleLarge,
+            style = if (large) MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
+            else MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp),
             color = if (showBackground) MaterialTheme.colorScheme.onPrimaryContainer
-                    else MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
+            else MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Black
         )
+
+        Spacer(modifier = Modifier.width(4.dp))
+
+        AnimatedContent(
+            targetState = CostCalculator.formatPriceShort(price),
+            transitionSpec = {
+                if (targetState > initialState) {
+                    (slideInVertically { height -> height } + fadeIn()).togetherWith(
+                        slideOutVertically { height -> -height } + fadeOut()
+                    )
+                } else {
+                    (slideInVertically { height -> -height } + fadeIn()).togetherWith(
+                        slideOutVertically { height -> height } + fadeOut()
+                    )
+                }
+            },
+            label = "priceAnimation"
+        ) { animatedPrice ->
+            Text(
+                text = animatedPrice,
+                style = if (large) MaterialTheme.typography.displayMedium.copy(fontSize = 32.sp)
+                else MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+                color = if (showBackground) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.ExtraBold
+            )
+        }
     }
 }

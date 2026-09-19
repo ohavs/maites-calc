@@ -1,6 +1,5 @@
 package com.example.maitescalc.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -13,7 +12,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import com.example.maitescalc.util.PreferencesManager
 
-fun AppColorPalette.toColorScheme() = if (this.id == "light") {
+fun AppColorPalette.toColorScheme() = if (!this.isDark) {
     lightColorScheme(
         primary = primary,
         onPrimary = onPrimary,
@@ -57,11 +56,11 @@ fun MaitesCalcTheme(
 ) {
     val context = LocalContext.current
     val preferencesManager = PreferencesManager(context)
-    val paletteId by preferencesManager.selectedPaletteFlow.collectAsState(initial = "lime")
+    val paletteId by preferencesManager.selectedPaletteFlow.collectAsState(initial = "monochrome")
     val palette = ColorPalettes.getById(paletteId)
     val colorScheme = palette.toColorScheme()
 
-    // כיוון RTL לעברית
+    // RTL for Hebrew
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         MaterialTheme(
             colorScheme = colorScheme,

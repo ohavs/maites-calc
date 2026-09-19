@@ -1,8 +1,11 @@
 package com.example.maitescalc.ui.screens.auth
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -45,24 +48,25 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                .padding(horizontal = 24.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Logo & Branding Icon
+            // Minimalist Logo Container
             Box(
                 modifier = Modifier
-                    .size(110.dp)
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .size(96.dp)
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(28.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Filled.Calculate,
                     contentDescription = null,
-                    modifier = Modifier.size(64.dp),
+                    modifier = Modifier.size(52.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -70,28 +74,29 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "מחשבון עלויות",
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold,
+                text = "Maite's Calc",
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "תמחור מדויק, מתכונים ורווחיות למאפים וקינוחים",
-                style = MaterialTheme.typography.titleMedium,
+                text = "מחשבון עלויות ותמחור מנות למאפים וקינוחים",
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Features Card
+            // Minimal Features Card
             MaitesCard(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = 22.dp
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     FeatureRow(
                         icon = Icons.Filled.CheckCircle,
                         text = "חישוב עלות עצמית אוטומטי לפי כמויות מדויקות"
@@ -111,12 +116,12 @@ fun LoginScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(36.dp))
 
             if (uiState.isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(44.dp)
                 )
             } else {
                 Column(
@@ -125,18 +130,14 @@ fun LoginScreen(
                 ) {
                     MaitesPrimaryButton(
                         text = "התחבר עם Google",
-                        onClick = {
-                            viewModel.signInAnonymously()
-                        },
+                        onClick = { viewModel.signInAnonymously() },
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Filled.Person
                     )
 
                     MaitesSecondaryButton(
                         text = "כניסה מיידית כאורח",
-                        onClick = {
-                            viewModel.signInAnonymously()
-                        },
+                        onClick = { viewModel.signInAnonymously() },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -152,7 +153,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -161,7 +162,7 @@ fun LoginScreen(
 private fun FeatureRow(icon: ImageVector, text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Icon(
             imageVector = icon,
@@ -172,6 +173,7 @@ private fun FeatureRow(icon: ImageVector, text: String) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface
         )
     }

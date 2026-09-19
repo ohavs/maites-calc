@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -43,14 +45,15 @@ fun RecipesScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "הוסף מתכון חדש")
-            }
+                shape = RoundedCornerShape(percent = 50),
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp),
+                icon = { Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                text = { Text("מתכון חדש", fontWeight = FontWeight.Bold) }
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -63,16 +66,16 @@ fun RecipesScreen(
             MaitesSearchBar(
                 query = uiState.searchQuery,
                 onQueryChange = viewModel::setSearchQuery,
-                placeholder = "חיפוש מתכון לפי שם...",
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                placeholder = "חפש מתכון לפי שם...",
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
 
-            // Category Filter Chips
+            // Category Filter Pills
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                    .padding(horizontal = 20.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 categories.forEach { category ->
@@ -80,24 +83,38 @@ fun RecipesScreen(
                     FilterChip(
                         selected = selected,
                         onClick = { viewModel.setSelectedCategory(category) },
-                        label = { Text(category) },
+                        label = {
+                            Text(
+                                text = category,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
                             selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                             containerColor = MaterialTheme.colorScheme.surface,
                             labelColor = MaterialTheme.colorScheme.onSurface
                         ),
-                        shape = MaterialTheme.shapes.small
+                        shape = RoundedCornerShape(percent = 50),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = selected,
+                            borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                            selectedBorderColor = MaterialTheme.colorScheme.primary
+                        )
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             // Content List
             if (uiState.isLoading) {
                 LoadingState(message = "טוען מתכונים...")
             } else if (uiState.filteredRecipes.isEmpty()) {
                 EmptyState(
-                    icon = Icons.Filled.MenuBook,
+                    icon = Icons.AutoMirrored.Filled.MenuBook,
                     title = if (uiState.searchQuery.isNotEmpty()) "לא נמצאו תוצאות" else "אין מתכונים עדיין",
                     subtitle = if (uiState.searchQuery.isNotEmpty())
                         "נסה לשנות את מילות החיפוש"
@@ -114,7 +131,7 @@ fun RecipesScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 96.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     items(
@@ -159,10 +176,11 @@ private fun RecipeCard(
 ) {
     MaitesCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = 20.dp
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            // Header Row: Name & Yield
+        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            // Header Row: Name & Margin Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -175,6 +193,7 @@ private fun RecipeCard(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -182,13 +201,14 @@ private fun RecipeCard(
                         if (recipe.category.isNotEmpty()) {
                             Box(
                                 modifier = Modifier
-                                    .clip(MaterialTheme.shapes.extraSmall)
+                                    .clip(RoundedCornerShape(percent = 50))
                                     .background(MaterialTheme.colorScheme.surfaceVariant)
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     text = recipe.category,
                                     style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
@@ -201,26 +221,23 @@ private fun RecipeCard(
                     }
                 }
 
-                // Profit margin chip
+                // Profit badge
                 Box(
                     modifier = Modifier
-                        .clip(MaterialTheme.shapes.small)
+                        .clip(RoundedCornerShape(percent = 50))
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "+${String.format("%.0f", recipe.profitMargin)}% רווח",
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
 
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceVariant
-            )
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
 
             // Price Metrics Row
             Row(
@@ -234,6 +251,7 @@ private fun RecipeCard(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     PriceDisplay(
                         price = recipe.costPerUnit,
                         large = false
@@ -246,6 +264,7 @@ private fun RecipeCard(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     PriceDisplay(
                         price = recipe.totalCost,
                         large = false
@@ -254,11 +273,12 @@ private fun RecipeCard(
 
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = "מחיר מכירה מומלץ",
+                        text = "מחיר מומלץ למנה",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
                     )
+                    Spacer(modifier = Modifier.height(2.dp))
                     PriceDisplay(
                         price = recipe.suggestedPrice,
                         large = false,
@@ -270,28 +290,36 @@ private fun RecipeCard(
             // Actions row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     onClick = onEdit,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
                         contentDescription = "ערוך מתכון",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp)
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(16.dp)
                     )
                 }
+                Spacer(modifier = Modifier.width(6.dp))
                 IconButton(
                     onClick = onDelete,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Delete,
+                        imageVector = Icons.Filled.DeleteOutline,
                         contentDescription = "מחק מתכון",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }

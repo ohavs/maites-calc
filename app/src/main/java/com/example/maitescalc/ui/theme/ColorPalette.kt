@@ -6,6 +6,7 @@ data class AppColorPalette(
     val id: String,
     val name: String,           // שם בעברית
     val emoji: String,          // אימוג'י לזיהוי
+    val isDark: Boolean = false,
     val primary: Color,
     val onPrimary: Color,
     val primaryContainer: Color,
@@ -19,129 +20,153 @@ data class AppColorPalette(
     val surfaceVariant: Color,
     val onSurfaceVariant: Color,
     val outline: Color,
-    val error: Color = Color(0xFFFF6B6B),
+    val error: Color = Color(0xFFE53935),
     val onError: Color = Color.White,
-    val success: Color = Color(0xFF4CAF50)
+    val success: Color = Color(0xFF10B981)
 )
 
 object ColorPalettes {
-    val Lime = AppColorPalette(
-        id = "lime",
-        name = "ליים",
-        emoji = "🍋",
-        primary = Color(0xFFC8E64A),
-        onPrimary = Color(0xFF1A1A2E),
-        primaryContainer = Color(0xFF3D5A00),
-        onPrimaryContainer = Color(0xFFD4F34F),
-        secondary = Color(0xFFA8C83A),
-        onSecondary = Color(0xFF1A1A2E),
-        background = Color(0xFF1A1A2E),
-        onBackground = Color(0xFFFFFFFF),
-        surface = Color(0xFF2D2D44),
-        onSurface = Color(0xFFE8E8F0),
-        surfaceVariant = Color(0xFF3D3D5C),
-        onSurfaceVariant = Color(0xFFB0B0C0),
-        outline = Color(0xFF4D4D6A)
-    )
-
-    val RosePastry = AppColorPalette(
-        id = "rose",
-        name = "ורוד מאפה",
-        emoji = "🧁",
-        primary = Color(0xFFFF8FAB),
-        onPrimary = Color(0xFF1C1520),
-        primaryContainer = Color(0xFF8C1D3F),
-        onPrimaryContainer = Color(0xFFFFD9E2),
-        secondary = Color(0xFFE86A8A),
-        onSecondary = Color(0xFF1C1520),
-        background = Color(0xFF1C1520),
-        onBackground = Color(0xFFFFFFFF),
-        surface = Color(0xFF2D2535),
-        onSurface = Color(0xFFF0E8EC),
-        surfaceVariant = Color(0xFF3D3548),
-        onSurfaceVariant = Color(0xFFC0B0B8),
-        outline = Color(0xFF5D4D58)
-    )
-
-    val Chocolate = AppColorPalette(
-        id = "chocolate",
-        name = "שוקולד",
-        emoji = "🍫",
-        primary = Color(0xFFD4A574),
-        onPrimary = Color(0xFF1A1410),
-        primaryContainer = Color(0xFF6D4C2C),
-        onPrimaryContainer = Color(0xFFFFDCC0),
-        secondary = Color(0xFFC49564),
-        onSecondary = Color(0xFF1A1410),
-        background = Color(0xFF1A1410),
-        onBackground = Color(0xFFFFFFFF),
-        surface = Color(0xFF2D2520),
-        onSurface = Color(0xFFF0E8E0),
-        surfaceVariant = Color(0xFF3D3530),
-        onSurfaceVariant = Color(0xFFC0B8B0),
-        outline = Color(0xFF5D5548)
-    )
-
-    val Ocean = AppColorPalette(
-        id = "ocean",
-        name = "תכלת",
-        emoji = "🌊",
-        primary = Color(0xFF64B5F6),
-        onPrimary = Color(0xFF0D1B2A),
-        primaryContainer = Color(0xFF1565C0),
-        onPrimaryContainer = Color(0xFFBBDEFB),
-        secondary = Color(0xFF42A5F5),
-        onSecondary = Color(0xFF0D1B2A),
-        background = Color(0xFF0D1B2A),
-        onBackground = Color(0xFFFFFFFF),
-        surface = Color(0xFF1B2838),
-        onSurface = Color(0xFFE0E8F0),
-        surfaceVariant = Color(0xFF283848),
-        onSurfaceVariant = Color(0xFFA0B0C0),
-        outline = Color(0xFF3D5060)
-    )
-
-    val Orange = AppColorPalette(
-        id = "orange",
-        name = "תפוז",
-        emoji = "🍊",
-        primary = Color(0xFFFFB74D),
-        onPrimary = Color(0xFF1A1510),
-        primaryContainer = Color(0xFFE65100),
-        onPrimaryContainer = Color(0xFFFFE0B2),
-        secondary = Color(0xFFFFA726),
-        onSecondary = Color(0xFF1A1510),
-        background = Color(0xFF1A1510),
-        onBackground = Color(0xFFFFFFFF),
-        surface = Color(0xFF2D2820),
-        onSurface = Color(0xFFF0E8E0),
-        surfaceVariant = Color(0xFF3D3830),
-        onSurfaceVariant = Color(0xFFC0B8A0),
-        outline = Color(0xFF5D5540)
-    )
-
-    val ClassicLight = AppColorPalette(
-        id = "light",
-        name = "לבן קלאסי",
-        emoji = "☁️",
-        primary = Color(0xFF6C63FF),
-        onPrimary = Color(0xFFFFFFFF),
-        primaryContainer = Color(0xFFE0DDFF),
-        onPrimaryContainer = Color(0xFF1A0060),
-        secondary = Color(0xFF5C56E0),
+    // 1. ברירת מחדל: שחור-לבן מינימליסטי יוקרתי (Expressive Monochrome)
+    val Monochrome = AppColorPalette(
+        id = "monochrome",
+        name = "שחור-לבן מודרני",
+        emoji = "🖤",
+        isDark = false,
+        primary = Color(0xFF0F172A),          // שחור פחם עמוק
+        onPrimary = Color(0xFFFFFFFF),        // לבן
+        primaryContainer = Color(0xFFF1F5F9), // אפור פנינה בהיר
+        onPrimaryContainer = Color(0xFF0F172A),
+        secondary = Color(0xFF334155),
         onSecondary = Color(0xFFFFFFFF),
-        background = Color(0xFFF5F5F7),
-        onBackground = Color(0xFF1A1A2E),
-        surface = Color(0xFFFFFFFF),
-        onSurface = Color(0xFF2D2D44),
-        surfaceVariant = Color(0xFFEEEEF2),
-        onSurfaceVariant = Color(0xFF6D6D80),
-        outline = Color(0xFFD0D0D8)
+        background = Color(0xFFF8FAFC),       // רקע בהיר מודרני נקי
+        onBackground = Color(0xFF0F172A),     // טקסט כהה חד
+        surface = Color(0xFFFFFFFF),          // כרטיסים לבנים מבריקים
+        onSurface = Color(0xFF0F172A),
+        surfaceVariant = Color(0xFFF1F5F9),
+        onSurfaceVariant = Color(0xFF64748B),
+        outline = Color(0xFFE2E8F0),          // קווי מתאר דקים ואלגנטיים
+        error = Color(0xFFDC2626),
+        success = Color(0xFF16A34A)
     )
 
-    val all = listOf(Lime, RosePastry, Chocolate, Ocean, Orange, ClassicLight)
+    // 2. כהה OLED מינימליסטי (Deep Dark Minimal)
+    val DarkMinimal = AppColorPalette(
+        id = "dark_minimal",
+        name = "שחור פחם OLED",
+        emoji = "🌑",
+        isDark = true,
+        primary = Color(0xFFFFFFFF),          // לבן בוהק
+        onPrimary = Color(0xFF09090B),        // שחור
+        primaryContainer = Color(0xFF27272A),
+        onPrimaryContainer = Color(0xFFFAFAFA),
+        secondary = Color(0xFFA1A1AA),
+        onSecondary = Color(0xFF09090B),
+        background = Color(0xFF09090B),       // רקע שחור עמוק
+        onBackground = Color(0xFFFAFAFA),     // טקסט לבן חד
+        surface = Color(0xFF18181B),          // כרטיס שחור גרפיט
+        onSurface = Color(0xFFFAFAFA),
+        surfaceVariant = Color(0xFF27272A),
+        onSurfaceVariant = Color(0xFFA1A1AA),
+        outline = Color(0xFF3F3F46),
+        error = Color(0xFFEF4444),
+        success = Color(0xFF22C55E)
+    )
+
+    // 3. אספרסו וקרם (Warm Espresso & Cream)
+    val Espresso = AppColorPalette(
+        id = "espresso",
+        name = "אספרסו וקרם",
+        emoji = "☕",
+        isDark = false,
+        primary = Color(0xFF2E1C14),          // קפה קלוי כהה
+        onPrimary = Color(0xFFFAF7F2),
+        primaryContainer = Color(0xFFF2EBE3),
+        onPrimaryContainer = Color(0xFF2E1C14),
+        secondary = Color(0xFF634A3E),
+        onSecondary = Color(0xFFFAF7F2),
+        background = Color(0xFFFAF7F2),       // קרם בהיר חם
+        onBackground = Color(0xFF2E1C14),
+        surface = Color(0xFFFFFFFF),
+        onSurface = Color(0xFF2E1C14),
+        surfaceVariant = Color(0xFFF3EDE6),
+        onSurfaceVariant = Color(0xFF7A685D),
+        outline = Color(0xFFE4D9CE),
+        error = Color(0xFFC2410C),
+        success = Color(0xFF15803D)
+    )
+
+    // 4. מרווה נורדית (Modern Nordic Sage)
+    val Sage = AppColorPalette(
+        id = "sage",
+        name = "מרווה אלגנטית",
+        emoji = "🌿",
+        isDark = false,
+        primary = Color(0xFF1E3A2F),          // ירוק מרווה עמוק
+        onPrimary = Color(0xFFFFFFFF),
+        primaryContainer = Color(0xFFE2EBE6),
+        onPrimaryContainer = Color(0xFF1E3A2F),
+        secondary = Color(0xFF3C5E51),
+        onSecondary = Color(0xFFFFFFFF),
+        background = Color(0xFFF5F8F6),
+        onBackground = Color(0xFF1E3A2F),
+        surface = Color(0xFFFFFFFF),
+        onSurface = Color(0xFF1E3A2F),
+        surfaceVariant = Color(0xFFE8EFEA),
+        onSurfaceVariant = Color(0xFF5E796F),
+        outline = Color(0xFFD3E0D8),
+        error = Color(0xFFDC2626),
+        success = Color(0xFF16A34A)
+    )
+
+    // 5. נייבי נקי (Clean Slate Navy)
+    val Slate = AppColorPalette(
+        id = "slate",
+        name = "כחול אטלנטי",
+        emoji = "🌊",
+        isDark = false,
+        primary = Color(0xFF1E293B),
+        onPrimary = Color(0xFFFFFFFF),
+        primaryContainer = Color(0xFFE2E8F0),
+        onPrimaryContainer = Color(0xFF0F172A),
+        secondary = Color(0xFF475569),
+        onSecondary = Color(0xFFFFFFFF),
+        background = Color(0xFFF1F5F9),
+        onBackground = Color(0xFF0F172A),
+        surface = Color(0xFFFFFFFF),
+        onSurface = Color(0xFF0F172A),
+        surfaceVariant = Color(0xFFE2E8F0),
+        onSurfaceVariant = Color(0xFF64748B),
+        outline = Color(0xFFCBD5E1),
+        error = Color(0xFFDC2626),
+        success = Color(0xFF10B981)
+    )
+
+    // 6. ורוד פסטל עדין (Soft Rose Bakery)
+    val SoftRose = AppColorPalette(
+        id = "soft_rose",
+        name = "רוז פסטל",
+        emoji = "🌸",
+        isDark = false,
+        primary = Color(0xFF881337),          // בורדו עמוק
+        onPrimary = Color(0xFFFFFFFF),
+        primaryContainer = Color(0xFFFFE4E6), // ורוד פסטל בהיר
+        onPrimaryContainer = Color(0xFF881337),
+        secondary = Color(0xFF9F1239),
+        onSecondary = Color(0xFFFFFFFF),
+        background = Color(0xFFFFF1F2),
+        onBackground = Color(0xFF4C0519),
+        surface = Color(0xFFFFFFFF),
+        onSurface = Color(0xFF4C0519),
+        surfaceVariant = Color(0xFFFFE4E6),
+        onSurfaceVariant = Color(0xFF9F1239),
+        outline = Color(0xFFFECDD3),
+        error = Color(0xFFE11D48),
+        success = Color(0xFF059669)
+    )
+
+    val all = listOf(Monochrome, DarkMinimal, Espresso, Sage, Slate, SoftRose)
 
     fun getById(id: String): AppColorPalette {
-        return all.find { it.id == id } ?: Lime
+        return all.find { it.id == id } ?: Monochrome
     }
 }
